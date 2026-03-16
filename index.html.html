@@ -574,16 +574,9 @@ nav { display: flex; gap: 4px; }
   flex-wrap: wrap;
 }
 
-/* In single-button mode the original full-width style still applies */
-.match-btn-row.single .match-btn {
-  max-width: 320px;
-  width: 100%;
-  margin: 0;
-}
-
-/* In dual-button mode both buttons share the row equally */
-.match-btn-row.dual .match-btn,
-.match-btn-row.dual .ai-match-btn {
+/* Both buttons always share the row equally */
+.match-btn-row .match-btn,
+.match-btn-row .ai-match-btn {
   flex: 1;
   min-width: 200px;
   margin: 0;
@@ -630,59 +623,6 @@ nav { display: flex; gap: 4px; }
   to { transform: rotate(360deg); }
 }
 
-/* ── API Key Input ───────────────────────────────────────────────────── */
-.api-key-wrap {
-  max-width: 320px;
-  margin: 0 auto 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-.api-key-field-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.api-key-icon {
-  position: absolute;
-  left: 14px;
-  font-size: 15px;
-  pointer-events: none;
-  line-height: 1;
-}
-#api-key-input {
-  width: 100%;
-  padding: 11px 16px 11px 38px;
-  border: 1.5px solid var(--border);
-  border-radius: 50px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13.5px;
-  background: white;
-  color: var(--ink);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px var(--shadow);
-}
-#api-key-input:focus {
-  border-color: var(--green-light);
-  box-shadow: 0 2px 12px rgba(45,106,79,0.13);
-}
-#api-key-input::placeholder { color: var(--ink-light); }
-#api-key-input.has-key {
-  border-color: var(--green-light);
-  background: var(--green-pale);
-}
-.api-key-helper {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11.5px;
-  color: var(--ink-light);
-  text-align: center;
-  justify-content: center;
-  line-height: 1.5;
-}
-.api-key-helper-icon { font-size: 12px; flex-shrink: 0; }
 
 #fridge-results { display: none; }
 #fridge-results.show { display: block; }
@@ -1457,28 +1397,11 @@ nav { display: flex; gap: 4px; }
 
   <div class="fridge-grid" id="fridge-grid"></div>
 
-  <div class="api-key-wrap">
-    <div class="api-key-field-row">
-      <span class="api-key-icon">🔑</span>
-      <input
-        type="password"
-        id="api-key-input"
-        placeholder="Enter Anthropic API key to use AI"
-        autocomplete="off"
-        oninput="handleApiKeyInput(this)"
-      >
-    </div>
-    <p class="api-key-helper">
-      <span class="api-key-helper-icon">🔒</span>
-      Your key is never stored or sent anywhere except directly to Anthropic.
-    </p>
-  </div>
-
-  <div class="match-btn-row single" id="match-btn-row">
+  <div class="match-btn-row" id="match-btn-row">
     <button class="match-btn" id="match-btn" onclick="runMatcher()" disabled>
       Find Matches ✨
     </button>
-    <button class="ai-match-btn" id="ai-match-btn" onclick="runAIMatcher()" disabled style="display:none;">
+    <button class="ai-match-btn" id="ai-match-btn" onclick="runAIMatcher()" disabled>
       <span id="ai-btn-label">Ask AI ✦</span>
     </button>
   </div>
@@ -3270,27 +3193,8 @@ function openIngredient(id) {
   window.scrollTo(0,0);
 }
 
-// ── API KEY ───────────────────────────────────────────────────────────────
-let anthropicKey = '';
-let activeFilters  = {};
-
-function handleApiKeyInput(el) {
-  anthropicKey = el.value.trim();
-  el.classList.toggle('has-key', anthropicKey.length > 0);
-
-  const row      = document.getElementById('match-btn-row');
-  const aiBtn    = document.getElementById('ai-match-btn');
-  const hasKey   = anthropicKey.length > 0;
-  const hasEnough = fridgeSelected.size >= 2;
-
-  // Toggle layout mode
-  row.classList.toggle('single', !hasKey);
-  row.classList.toggle('dual',    hasKey);
-
-  // Show / hide AI button
-  aiBtn.style.display  = hasKey ? '' : 'none';
-  aiBtn.disabled       = !(hasKey && hasEnough);
-}
+// ── ACTIVE FILTERS ───────────────────────────────────────────────────────
+let activeFilters = {};
 
 // ── FILTER PANEL ─────────────────────────────────────────────────────────
 function toggleFilterPanel() {
@@ -3323,8 +3227,7 @@ function toggleFridgeItem(id) {
   renderFridgeGrid();
   const hasEnough = fridgeSelected.size >= 2;
   document.getElementById('match-btn').disabled = !hasEnough;
-  const aiBtn = document.getElementById('ai-match-btn');
-  if (aiBtn) aiBtn.disabled = !(hasEnough && anthropicKey.length > 0);
+  document.getElementById('ai-match-btn').disabled = !hasEnough;
   document.getElementById('fridge-results').classList.remove('show');
 }
 
@@ -3479,53 +3382,60 @@ function buildAIPrompt(selectedIngredients, activeFilters) {
 // ── AI FETCH ─────────────────────────────────────────────────────────────
 async function fetchAISynergies(prompt) {
 
-  // ── 1. Send the request to the Cloudflare Worker ──────────────────────
+  // ── 1. Guard: require a non-empty prompt ──────────────────────────────
+  if (!prompt || prompt.trim() === '') {
+    throw new Error('Nothing to send — prompt is empty.');
+  }
+
+  // ── 2. Send request to our Cloudflare Worker ──────────────────────────
   let response;
   try {
-    response = await fetch('https://nutriguide-server.your-name.workers.dev/api/synergies', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt }),
+    response = await fetch('https://nutriguide-server.rnsrilalita-cell.workers.dev/api/synergies', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ prompt }),
     });
   } catch (networkErr) {
     throw new Error(
-      'Network error — could not reach the NutriGuide server. ' +
+      'Network error — could not reach the server. ' +
       'Check your internet connection and try again. ' +
       '(' + networkErr.message + ')'
     );
   }
 
-  // ── 2. Handle non-ok HTTP responses ───────────────────────────────────
-  if (!response.ok) {
-    throw new Error(
-      'Server returned an error (HTTP ' + response.status + ' ' +
-      response.statusText + '). Please try again.'
-    );
-  }
-
-  // ── 3. Parse the JSON response body ───────────────────────────────────
+  // ── 3. Parse the response body ────────────────────────────────────────
   let data;
   try {
     data = await response.json();
   } catch (parseErr) {
     throw new Error(
-      'Received an unreadable response from the server. ' +
-      'Please try again. (' + parseErr.message + ')'
+      'Received an unreadable response from the server (HTTP ' +
+      response.status + '). Please try again.'
     );
   }
 
-  // ── 4. Validate the result field is present ───────────────────────────
+  // ── 4. Handle server-level errors ─────────────────────────────────────
+  if (!response.ok) {
+    const friendlyMessages = {
+      429: 'Too many requests — please wait a moment and try again.',
+      500: 'Server error. Please try again in a few seconds.',
+      502: 'Could not reach the AI service. Please try again shortly.',
+    };
+    const friendly = friendlyMessages[response.status]
+      || (data.error || ('Server returned error ' + response.status));
+    throw new Error(friendly);
+  }
+
+  // ── 5. Validate the result field is present ───────────────────────────
   if (!data.result || typeof data.result !== 'string' || data.result.trim() === '') {
     throw new Error(
-      'The server response was missing the expected result data. ' +
-      'Please try again or contact support if the problem persists.'
+      'The server returned an empty result. ' +
+      'This can happen if the request was too complex — try selecting fewer ingredients.'
     );
   }
 
-  // ── 5. Return the result — caller is responsible for JSON parsing ──────
-  return data.result;
+  // ── 6. Return the raw text — renderAIResults handles JSON parsing ──────
+  return data.result.trim();
 }
 
 // ── AI RESULTS RENDERER ──────────────────────────────────────────────────
@@ -3839,6 +3749,7 @@ const AI_MESSAGES = [
 ];
 let _aiMsgTimer   = null;
 let _aiMsgIndex   = 0;
+let _aiSlowTimer  = null;   // fires at 6 s to show the slow-connection message
 
 function showAILoading() {
   const loader  = document.getElementById('ai-loading');
@@ -3865,13 +3776,28 @@ function showAILoading() {
       msgEl.classList.remove('fading');
     }, 300);
   }, 2000);
+
+  // After 6 seconds stop the rotation and show the slow-connection message
+  _aiSlowTimer = setTimeout(function () {
+    clearInterval(_aiMsgTimer);
+    _aiMsgTimer = null;
+    // Fade out the current message, then swap in the slow message
+    msgEl.classList.add('fading');
+    setTimeout(function () {
+      msgEl.textContent = 'Taking a little longer than usual — almost there…';
+      msgEl.classList.remove('fading');
+    }, 300);
+  }, 6000);
 }
 
 function clearAILoading() {
   const loader = document.getElementById('ai-loading');
   loader.classList.remove('visible');
+  // Clear both timers — whichever is still running
   clearInterval(_aiMsgTimer);
-  _aiMsgTimer = null;
+  clearTimeout(_aiSlowTimer);
+  _aiMsgTimer  = null;
+  _aiSlowTimer = null;
 }
 
 // ── AI MATCHER ───────────────────────────────────────────────────────────
@@ -3880,7 +3806,7 @@ async function runAIMatcher() {
   const label    = document.getElementById('ai-btn-label');
   const matchBtn = document.getElementById('match-btn');
 
-  // ── Guard: need at least 2 ingredients ──────────────────────────────
+  // ── Guard: need at least 2 ingredients ─────────────────────────────
   if (fridgeSelected.size < 2) {
     showToast('Select at least 2 ingredients first.');
     return;
