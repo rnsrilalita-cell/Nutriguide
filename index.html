@@ -3390,7 +3390,7 @@ async function fetchAISynergies(prompt) {
   // ── 2. Send request to our Cloudflare Worker ──────────────────────────
   let response;
   try {
-    response = await fetch('https://nutriguide-server.rnsrilalita-cell.workers.dev/api/synergies', {
+    response = await fetch('https://nutriguide-server.rnsrilalita.workers.dev/api/synergies', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ prompt }),
