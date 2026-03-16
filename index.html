@@ -1203,11 +1203,36 @@ nav { display: flex; gap: 4px; }
   user-select: none;
 }
 
-/* Group accent colours */
+/* Group accent colours — default (unselected) */
 .filter-group.dietary  .filter-chip { border-color: #FDDCAA; color: #92400E; background: #FFF7ED; }
 .filter-group.cuisine  .filter-chip { border-color: #BFDBFE; color: #1E40AF; background: #EFF6FF; }
 .filter-group.mealtype .filter-chip { border-color: #BBF7D0; color: #166534; background: #F0FDF4; }
 .filter-group.health   .filter-chip { border-color: #E9D5FF; color: #6B21A8; background: #FAF5FF; }
+
+/* Clickable cursor on all filter chips */
+.filter-chip { cursor: pointer; transition: all 0.15s; }
+.filter-chip:hover { opacity: 0.8; transform: translateY(-1px); }
+
+/* Active (selected) state — filled solid per group */
+.filter-group.dietary  .filter-chip.active { background: #D97706; border-color: #D97706; color: white; }
+.filter-group.cuisine  .filter-chip.active { background: #1D4ED8; border-color: #1D4ED8; color: white; }
+.filter-group.mealtype .filter-chip.active { background: #15803D; border-color: #15803D; color: white; }
+.filter-group.health   .filter-chip.active { background: #7E22CE; border-color: #7E22CE; color: white; }
+
+/* Active chip count badge on the toggle button */
+.filter-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: 2px;
+}
 
 .filter-panel-divider {
   height: 1px;
@@ -1335,13 +1360,13 @@ nav { display: flex; gap: 4px; }
         <div class="filter-group dietary">
           <span class="filter-group-label">🥗 Dietary Restrictions</span>
           <div class="filter-chips-row">
-            <span class="filter-chip">Vegetarian</span>
-            <span class="filter-chip">Vegan</span>
-            <span class="filter-chip">Jain (No Root Veg)</span>
-            <span class="filter-chip">Sattvic (No Onion-Garlic)</span>
-            <span class="filter-chip">Gluten-Free</span>
-            <span class="filter-chip">Dairy-Free</span>
-            <span class="filter-chip">Diabetic-Friendly</span>
+            <span class="filter-chip" data-group="dietary" data-key="dietary_vegetarian"   onclick="toggleChip(this)">Vegetarian</span>
+            <span class="filter-chip" data-group="dietary" data-key="dietary_vegan"        onclick="toggleChip(this)">Vegan</span>
+            <span class="filter-chip" data-group="dietary" data-key="dietary_jain"         onclick="toggleChip(this)">Jain (No Root Veg)</span>
+            <span class="filter-chip" data-group="dietary" data-key="dietary_sattvic"      onclick="toggleChip(this)">Sattvic (No Onion-Garlic)</span>
+            <span class="filter-chip" data-group="dietary" data-key="dietary_glutenfree"   onclick="toggleChip(this)">Gluten-Free</span>
+            <span class="filter-chip" data-group="dietary" data-key="dietary_dairyfree"    onclick="toggleChip(this)">Dairy-Free</span>
+            <span class="filter-chip" data-group="dietary" data-key="dietary_diabetic"     onclick="toggleChip(this)">Diabetic-Friendly</span>
           </div>
         </div>
 
@@ -1351,12 +1376,12 @@ nav { display: flex; gap: 4px; }
         <div class="filter-group cuisine">
           <span class="filter-group-label">🌍 Cuisine</span>
           <div class="filter-chips-row">
-            <span class="filter-chip">All India</span>
-            <span class="filter-chip">North India</span>
-            <span class="filter-chip">South India</span>
-            <span class="filter-chip">East India</span>
-            <span class="filter-chip">West India</span>
-            <span class="filter-chip">Global</span>
+            <span class="filter-chip" data-group="cuisine" data-key="cuisine_allindia"    onclick="toggleChip(this)">All India</span>
+            <span class="filter-chip" data-group="cuisine" data-key="cuisine_north"       onclick="toggleChip(this)">North India</span>
+            <span class="filter-chip" data-group="cuisine" data-key="cuisine_south"       onclick="toggleChip(this)">South India</span>
+            <span class="filter-chip" data-group="cuisine" data-key="cuisine_east"        onclick="toggleChip(this)">East India</span>
+            <span class="filter-chip" data-group="cuisine" data-key="cuisine_west"        onclick="toggleChip(this)">West India</span>
+            <span class="filter-chip" data-group="cuisine" data-key="cuisine_global"      onclick="toggleChip(this)">Global</span>
           </div>
         </div>
 
@@ -1366,12 +1391,12 @@ nav { display: flex; gap: 4px; }
         <div class="filter-group mealtype">
           <span class="filter-group-label">🍽️ Meal Type</span>
           <div class="filter-chips-row">
-            <span class="filter-chip">Breakfast</span>
-            <span class="filter-chip">Lunch</span>
-            <span class="filter-chip">Dinner</span>
-            <span class="filter-chip">Snack</span>
-            <span class="filter-chip">Quick (under 30 min)</span>
-            <span class="filter-chip">One-Pot</span>
+            <span class="filter-chip" data-group="mealtype" data-key="mealtype_breakfast" onclick="toggleChip(this)">Breakfast</span>
+            <span class="filter-chip" data-group="mealtype" data-key="mealtype_lunch"     onclick="toggleChip(this)">Lunch</span>
+            <span class="filter-chip" data-group="mealtype" data-key="mealtype_dinner"    onclick="toggleChip(this)">Dinner</span>
+            <span class="filter-chip" data-group="mealtype" data-key="mealtype_snack"     onclick="toggleChip(this)">Snack</span>
+            <span class="filter-chip" data-group="mealtype" data-key="mealtype_quick"     onclick="toggleChip(this)">Quick (under 30 min)</span>
+            <span class="filter-chip" data-group="mealtype" data-key="mealtype_onepot"    onclick="toggleChip(this)">One-Pot</span>
           </div>
         </div>
 
@@ -1381,12 +1406,12 @@ nav { display: flex; gap: 4px; }
         <div class="filter-group health">
           <span class="filter-group-label">💪 Health Goal</span>
           <div class="filter-chips-row">
-            <span class="filter-chip">High Protein</span>
-            <span class="filter-chip">Iron Boost</span>
-            <span class="filter-chip">Gut Health</span>
-            <span class="filter-chip">Anti-Inflammatory</span>
-            <span class="filter-chip">Weight Loss</span>
-            <span class="filter-chip">Energy</span>
+            <span class="filter-chip" data-group="health" data-key="health_protein"       onclick="toggleChip(this)">High Protein</span>
+            <span class="filter-chip" data-group="health" data-key="health_iron"          onclick="toggleChip(this)">Iron Boost</span>
+            <span class="filter-chip" data-group="health" data-key="health_gut"           onclick="toggleChip(this)">Gut Health</span>
+            <span class="filter-chip" data-group="health" data-key="health_antiinflam"    onclick="toggleChip(this)">Anti-Inflammatory</span>
+            <span class="filter-chip" data-group="health" data-key="health_weightloss"    onclick="toggleChip(this)">Weight Loss</span>
+            <span class="filter-chip" data-group="health" data-key="health_energy"        onclick="toggleChip(this)">Energy</span>
           </div>
         </div>
 
@@ -3205,6 +3230,48 @@ function toggleFilterPanel() {
   btn.classList.toggle('open', !isOpen);
 }
 
+function toggleChip(el) {
+  const key     = el.dataset.key;
+  const label   = el.textContent.trim();
+  const isActive = el.classList.contains('active');
+
+  if (isActive) {
+    // Deselect — remove from activeFilters
+    el.classList.remove('active');
+    delete activeFilters[key];
+  } else {
+    // Select — add to activeFilters with the chip label as value
+    el.classList.add('active');
+    activeFilters[key] = label;
+  }
+
+  // Update the badge count on the toggle button
+  updateFilterBadge();
+}
+
+function updateFilterBadge() {
+  const btn        = document.getElementById('filter-toggle-btn');
+  const count      = Object.keys(activeFilters).length;
+  // Remove existing badge if present
+  const existing   = btn.querySelector('.filter-count-badge');
+  if (existing) existing.remove();
+  // Add badge only when at least one filter is active
+  if (count > 0) {
+    const badge      = document.createElement('span');
+    badge.className  = 'filter-count-badge';
+    badge.textContent = count;
+    btn.appendChild(badge);
+  }
+}
+
+function clearAllFilters() {
+  activeFilters = {};
+  document.querySelectorAll('.filter-chip.active').forEach(function(chip) {
+    chip.classList.remove('active');
+  });
+  updateFilterBadge();
+}
+
 // ── FRIDGE MATCHER ────────────────────────────────────────────────────────
 function renderFridgeGrid() {
   const grid = document.getElementById('fridge-grid');
@@ -3246,27 +3313,11 @@ function renderFridgeSelected() {
 // ── AI PROMPT BUILDER ────────────────────────────────────────────────────
 function buildAIPrompt(selectedIngredients, activeFilters) {
 
-  // ── 1. Ingredient list with nutritional context ──────────────────────
-  const ingredientLines = selectedIngredients.map(ing => {
-    const nutrients  = ing.keyNutrients  ? ing.keyNutrients.join(', ')  : 'N/A';
-    const pairWith   = ing.pairWith      ? ing.pairWith.join(', ')      : 'N/A';
-    const avoidPair  = ing.avoid         || 'None noted';
-    return '- ' + ing.name
-      + ' | Key nutrients: ' + nutrients
-      + ' | Known synergies: ' + pairWith
-      + ' | Avoid pairing with: ' + avoidPair;
-  }).join('\n');
+  // ── Ingredient names — simple list, no heavy nutritional data ──────────
+  const names = selectedIngredients.map(i => i.name).join(', ');
 
-  const ingredientNames = selectedIngredients.map(i => i.name).join(', ');
-
-  // ── 2. Active filters as readable constraints ────────────────────────
-  const filterSections = {
-    dietary:  [],
-    cuisine:  [],
-    mealtype: [],
-    health:   [],
-  };
-
+  // ── Parse active filters ────────────────────────────────────────────────
+  const filterSections = { dietary:[], cuisine:[], mealtype:[], health:[] };
   if (activeFilters && typeof activeFilters === 'object') {
     Object.entries(activeFilters).forEach(([key, val]) => {
       if (!val) return;
@@ -3277,104 +3328,32 @@ function buildAIPrompt(selectedIngredients, activeFilters) {
     });
   }
 
-  const hasFilters = Object.values(filterSections).some(arr => arr.length > 0);
+  const dietary  = filterSections.dietary.length  ? filterSections.dietary.join(', ')  : 'none';
+  const cuisine  = filterSections.cuisine.length   ? filterSections.cuisine.join(', ')  : 'all cuisines, prioritise Indian';
+  const mealtype = filterSections.mealtype.length  ? filterSections.mealtype.join(', ') : 'any';
+  const health   = filterSections.health.length    ? filterSections.health.join(', ')   : 'none';
 
-  const dietaryStr  = filterSections.dietary.length  ? filterSections.dietary.join(', ')  : 'None';
-  const cuisineStr  = filterSections.cuisine.length   ? filterSections.cuisine.join(', ')  : 'All cuisines welcome, prioritise Indian';
-  const mealtypeStr = filterSections.mealtype.length  ? filterSections.mealtype.join(', ') : 'Any meal type';
-  const healthStr   = filterSections.health.length    ? filterSections.health.join(', ')   : 'No specific goal';
+  // ── Strict dietary flags ─────────────────────────────────────────────────
+  const strict = [
+    filterSections.dietary.some(f => /jain/i.test(f))     ? 'Jain: NO root vegetables (potato, carrot, onion, garlic, beetroot, radish, turnip).' : '',
+    filterSections.dietary.some(f => /sattvic/i.test(f))  ? 'Sattvic: NO onion, NO garlic.' : '',
+    filterSections.dietary.some(f => /vegan/i.test(f))    ? 'Vegan: NO dairy, eggs, honey, meat, fish.' : '',
+    filterSections.dietary.some(f => /diabetic/i.test(f)) ? 'Diabetic-friendly: low-GI only, no refined sugar.' : '',
+    filterSections.mealtype.some(f => /quick/i.test(f))   ? 'Quick: under 30 minutes only.' : '',
+  ].filter(Boolean).join(' ');
 
-  // ── 3. Special constraint flags ──────────────────────────────────────
-  const isJain     = filterSections.dietary.some(f => f.toLowerCase().includes('jain'));
-  const isSattvic  = filterSections.dietary.some(f => f.toLowerCase().includes('sattvic'));
-  const isVegan    = filterSections.dietary.some(f => f.toLowerCase().includes('vegan'));
-  const isDiabetic = filterSections.dietary.some(f => f.toLowerCase().includes('diabetic'));
-  const isQuick    = filterSections.mealtype.some(f => f.toLowerCase().includes('quick'));
-
-  const strictFlags = [
-    isJain     ? 'STRICT: Jain diet — absolutely NO root vegetables (potato, carrot, onion, garlic, beetroot, radish, turnip), NO underground vegetables of any kind.' : '',
-    isSattvic  ? 'STRICT: Sattvic diet — NO onion, NO garlic, NO leek, NO shallot, NO chives in any recipe.' : '',
-    isVegan    ? 'STRICT: Vegan — NO dairy (milk, ghee, paneer, curd, cream, butter), NO eggs, NO honey, NO meat, NO fish.' : '',
-    isDiabetic ? 'STRICT: Diabetic-friendly — avoid high-GI ingredients, no refined sugar, prefer low-glycaemic preparations, note GI impact in descriptions.' : '',
-    isQuick    ? 'STRICT: Quick recipes only — every recipe must be achievable in under 30 minutes. Exclude slow-cook, dum, or overnight preparations.' : '',
-  ].filter(Boolean).join('\n');
-
-  // ── 4. Cuisine instruction ────────────────────────────────────────────
-  const cuisineInstruction = filterSections.cuisine.length
-    ? 'Focus recipes specifically on: ' + cuisineStr + '. For Indian cuisines, specify the exact region (North, South, East/North-East, West) and state name or cooking tradition where possible.'
-    : 'Prioritise Indian recipes from all four regions (North, South, East/North-East, West). Also include 1–2 global recipes if relevant.';
-
-  // ── 5. Full prompt ────────────────────────────────────────────────────
+  // ── Compact prompt ───────────────────────────────────────────────────────
   const prompt = [
-    'You are a nutritionist and expert Indian chef with deep knowledge of both food science and regional Indian cuisines from all four regions: North, South, East/North-East, and West India.',
+    'You are a world-cuisine expert. Given these ingredients: ' + names,
+    'Find 6 real, well-known recipes from around the world that use most or all of them.',
+    'Cuisine focus: ' + cuisine + '. Meal type: ' + mealtype + '. Dietary: ' + dietary + '. Health goal: ' + health + '.',
+    strict ? ('Strict rules: ' + strict) : '',
+    'Also note any important nutritional tip or conflict worth knowing for this combination (1-2 sentences max).',
     '',
-    '## Selected Ingredients',
-    ingredientLines,
-    '',
-    '## Active Filters & Constraints',
-    'Dietary restrictions: ' + dietaryStr,
-    'Cuisine preference:   ' + cuisineStr,
-    'Meal type:            ' + mealtypeStr,
-    'Health goal:          ' + healthStr,
-    '',
-    strictFlags ? ('## STRICT DIETARY RULES — MUST FOLLOW\n' + strictFlags + '\n') : '',
-    '## Your Task',
-    'Analyse the selected ingredients (' + ingredientNames + ') and provide the following:',
-    '',
-    '### 1. Nutritional Synergies',
-    'Identify all meaningful nutritional synergies between the selected ingredients.',
-    'For each synergy explain the biochemical mechanism — e.g. fat-soluble vitamins needing fat to absorb, vitamin C increasing non-heme iron absorption, piperine increasing curcumin bioavailability, etc.',
-    'Be specific: name the compound, the mechanism, and the estimated absorption improvement if known.',
-    'Also suggest one additional ingredient the user could add to this combination to most improve the nutritional profile, with a brief reason.',
-    '',
-    '### 2. Indian & Global Recipes',
-    cuisineInstruction,
-    'For each recipe: confirm it genuinely uses the majority of the selected ingredients.',
-    'Respect all dietary restrictions strictly — do not include any recipe that violates them.',
-    hasFilters && healthStr !== 'No specific goal' ? 'Health goal alignment: ' + healthStr + ' — tailor recipe choices and descriptions toward this goal.' : '',
-    '',
-    '### 3. Nutritional Conflicts',
-    'Identify any nutritional conflicts between the selected ingredients — e.g. calcium blocking iron absorption, oxalates reducing mineral uptake, competing absorption pathways.',
-    'Only include genuine, evidence-based conflicts. If there are none, return an empty array.',
-    '',
-    '## Response Format',
-    'YOU MUST respond with ONLY valid JSON. No preamble, no explanation, no markdown code fences. Start your response with { and end with }.',
-    'Use exactly this structure:',
-    '{',
-    '  "synergies": [',
-    '    {',
-    '      "pair": "Ingredient A + Ingredient B",',
-    '      "mechanism": "Scientific explanation of why they work together",',
-    '      "benefit": "Practical benefit to the person eating them",',
-    '      "improvement": "e.g. 3x better iron absorption"',
-    '    }',
-    '  ],',
-    '  "bonus_ingredient": {',
-    '    "name": "Ingredient name",',
-    '    "reason": "Why adding this would most improve the nutritional profile"',
-    '  },',
-    '  "recipes": [',
-    '    {',
-    '      "name": "Recipe name",',
-    '      "region": "e.g. South India — Kerala or North India — Punjab",',
-    '      "type": "e.g. Dal / Sabzi / Chutney / Curry / Flatbread / Snack",',
-    '      "description": "2–3 sentence description of the dish, how it is made, and why it works with these ingredients",',
-    '      "ingredients": ["ingredient 1", "ingredient 2"],',
-    '      "cookTime": "e.g. 20 minutes"',
-    '    }',
-    '  ],',
-    '  "conflicts": [',
-    '    {',
-    '      "pair": "Ingredient A + Ingredient B",',
-    '      "issue": "What the conflict is",',
-    '      "severity": "Mild / Moderate / High",',
-    '      "tip": "How to mitigate or work around it"',
-    '    }',
-    '  ]',
-    '}',
-    '',
-    'Provide 3–6 recipes and all genuine synergies. Keep descriptions concise but informative.',
-  ].filter(line => line !== null && line !== undefined).join('\n');
+    'Respond with ONLY this JSON (no markdown, no extra text):',
+    '{"recipes":[{"name":"X","country":"X","region":"X","type":"X","description":"2 sentences max","ingredients":["a","b","c"],"cookTime":"X min"}],"nutrition_note":"one short tip or empty string","bonus_ingredient":{"name":"X","reason":"short reason"}}',
+    'Rules: real dishes only, no invented recipes, 6 recipes total spanning different countries/regions.',
+  ].filter(Boolean).join(' ');
 
   return prompt;
 }
@@ -3442,10 +3421,9 @@ async function fetchAISynergies(prompt) {
 function renderAIResults(jsonResponse) {
   const resultsDiv = document.getElementById('fridge-results');
 
-  // ── 1. Parse the JSON — show friendly error if it fails ───────────────
+  // ── Parse — strip markdown fences Claude sometimes adds ───────────────
   let data;
   try {
-    // Strip markdown code fences if Claude wrapped the JSON in them
     const cleaned = jsonResponse
       .replace(/^```json\s*/i, '')
       .replace(/^```\s*/,      '')
@@ -3458,75 +3436,28 @@ function renderAIResults(jsonResponse) {
         '<div class="ai-parse-error-icon">⚠️</div>' +
         '<div>' +
           '<div class="ai-parse-error-title">Could not read the AI response</div>' +
-          '<div class="ai-parse-error-body">' +
-            'The response arrived but was not in the expected format. ' +
-            'This occasionally happens — please try again. ' +
-            'If the problem persists, try selecting fewer ingredients.' +
-          '</div>' +
-          '<div class="ai-parse-error-raw">' +
-            jsonResponse.substring(0, 500) + (jsonResponse.length > 500 ? '…' : '') +
-          '</div>' +
+          '<div class="ai-parse-error-body">The response arrived but was not in the expected format. Please try again.</div>' +
+          '<div class="ai-parse-error-raw">' + jsonResponse.substring(0, 400) + (jsonResponse.length > 400 ? '…' : '') + '</div>' +
         '</div>' +
       '</div>';
     resultsDiv.classList.add('show');
     return;
   }
 
-  const synergies  = Array.isArray(data.synergies) ? data.synergies : [];
-  const recipes    = Array.isArray(data.recipes)   ? data.recipes   : [];
-  const conflicts  = Array.isArray(data.conflicts) ? data.conflicts : [];
-  const bonus      = data.bonus_ingredient || null;
+  const recipes = Array.isArray(data.recipes) ? data.recipes : [];
+  const note    = (data.nutrition_note && data.nutrition_note.trim()) ? data.nutrition_note.trim() : '';
+  const bonus   = data.bonus_ingredient || null;
   let html = '';
 
-  // ── 2. AI Synergies section ───────────────────────────────────────────
-  if (synergies.length > 0 || bonus) {
-    html += '<div class="results-section">';
-    html +=   '<div class="results-title">💚 AI Synergies <span class="ai-badge">✦ AI</span></div>';
-
-    synergies.forEach(function(s) {
-      const pair        = s.pair        || '';
-      const mechanism   = s.mechanism   || '';
-      const benefit     = s.benefit     || '';
-      const improvement = s.improvement || '';
-
-      html += '<div class="synergy-row ai-synergy">';
-      html +=   '<div class="synergy-header">';
-      html +=     '<span class="synergy-pair">' + pair + '</span>';
-      if (improvement) {
-        html += '<span class="synergy-improvement">↑ ' + improvement + '</span>';
-      }
-      html +=   '</div>';
-      if (mechanism) {
-        html += '<div class="synergy-mechanism">' + mechanism + '</div>';
-      }
-      if (benefit) {
-        html += '<div class="synergy-benefit">' + benefit + '</div>';
-      }
-      html += '</div>';
-    });
-
-    // Bonus ingredient suggestion
-    if (bonus && bonus.name) {
-      html += '<div class="bonus-ingredient-row">';
-      html +=   '<div class="bonus-icon">✨</div>';
-      html +=   '<div>';
-      html +=     '<div class="bonus-name">Add: ' + bonus.name + '</div>';
-      html +=     '<div class="bonus-reason">' + (bonus.reason || '') + '</div>';
-      html +=   '</div>';
-      html += '</div>';
-    }
-
-    html += '</div>';
-  }
-
-  // ── 3. Recipes section ────────────────────────────────────────────────
+  // ── Recipes section ───────────────────────────────────────────────────
   if (recipes.length > 0) {
     html += '<div class="results-section">';
-    html +=   '<div class="results-title">🍛 Indian & Global Recipes <span class="ai-badge">✦ AI</span></div>';
+    html +=   '<div class="results-title">🌍 Recipes From Around the World <span class="ai-badge">✦ AI</span></div>';
 
     recipes.forEach(function(r) {
       const name        = r.name        || 'Untitled';
-      const region      = r.region      || '';
+      const country     = r.country     || '';
+      const region      = r.region      || country;
       const type        = r.type        || '';
       const description = r.description || '';
       const cookTime    = r.cookTime    || '';
@@ -3536,14 +3467,12 @@ function renderAIResults(jsonResponse) {
       html +=   '<div class="ai-recipe-card-header">';
       html +=     '<div class="ai-recipe-name">' + name + '</div>';
       html +=     '<div class="ai-recipe-badges">';
-      if (region)   html += '<span class="ai-recipe-region">'   + region   + '</span>';
-      if (type)     html += '<span class="ai-recipe-type">'     + type     + '</span>';
+      if (region)   html += '<span class="ai-recipe-region">📍 ' + region   + '</span>';
+      if (type)     html += '<span class="ai-recipe-type">'       + type     + '</span>';
       if (cookTime) html += '<span class="ai-recipe-cooktime">⏱ ' + cookTime + '</span>';
       html +=     '</div>';
       html +=   '</div>';
-      if (description) {
-        html += '<div class="ai-recipe-desc">' + description + '</div>';
-      }
+      if (description) html += '<div class="ai-recipe-desc">' + description + '</div>';
       if (ingredients.length > 0) {
         html += '<div class="ai-recipe-ingredients">';
         ingredients.forEach(function(ing) {
@@ -3557,47 +3486,43 @@ function renderAIResults(jsonResponse) {
     html += '</div>';
   }
 
-  // ── 4. Conflicts section ──────────────────────────────────────────────
-  if (conflicts.length > 0) {
+  // ── Nutrition note ────────────────────────────────────────────────────
+  if (note) {
     html += '<div class="results-section">';
-    html +=   '<div class="results-title">⚠️ Nutritional Conflicts <span class="ai-badge">✦ AI</span></div>';
-
-    conflicts.forEach(function(c) {
-      const pair     = c.pair     || '';
-      const issue    = c.issue    || '';
-      const tip      = c.tip      || '';
-      const severity = (c.severity || 'mild').toLowerCase();
-
-      html += '<div class="conflict-row ai-conflict">';
-      html +=   '<div class="conflict-header">';
-      html +=     '<span class="conflict-pair">⚠ ' + pair + '</span>';
-      if (severity) {
-        html += '<span class="conflict-severity ' + severity + '">' + c.severity + '</span>';
-      }
-      html +=   '</div>';
-      if (issue) html += '<div class="conflict-issue">'  + issue + '</div>';
-      if (tip)   html += '<div class="conflict-tip">💡 ' + tip   + '</div>';
-      html += '</div>';
-    });
-
+    html +=   '<div class="results-title">💡 Nutrition Tip <span class="ai-badge">✦ AI</span></div>';
+    html +=   '<div class="synergy-row" style="flex-direction:column;align-items:flex-start;gap:4px;">';
+    html +=     '<p style="font-size:14px;color:var(--ink-mid);line-height:1.6;">' + note + '</p>';
+    html +=   '</div>';
     html += '</div>';
   }
 
-  // ── 5. Nothing returned ───────────────────────────────────────────────
+  // ── Bonus ingredient ──────────────────────────────────────────────────
+  if (bonus && bonus.name) {
+    html += '<div class="results-section">';
+    html +=   '<div class="results-title">✨ Try Adding <span class="ai-badge">✦ AI</span></div>';
+    html +=   '<div class="bonus-ingredient-row">';
+    html +=     '<div class="bonus-icon">✨</div>';
+    html +=     '<div>';
+    html +=       '<div class="bonus-name">' + bonus.name + '</div>';
+    html +=       '<div class="bonus-reason">' + (bonus.reason || '') + '</div>';
+    html +=     '</div>';
+    html +=   '</div>';
+    html += '</div>';
+  }
+
+  // ── Nothing returned ──────────────────────────────────────────────────
   if (!html) {
     html =
       '<div class="results-section">' +
         '<p style="color:var(--ink-light);text-align:center;padding:20px;">' +
-          'The AI did not return any results for this combination. ' +
-          'Try selecting more ingredients or adjusting your filters.' +
+          'No recipes found for this combination. Try selecting different ingredients or adjusting your filters.' +
         '</p>' +
       '</div>';
   }
 
   resultsDiv.innerHTML = html;
-  // Trigger staggered fade-up by briefly removing then re-adding the class
   resultsDiv.classList.remove('ai-results-animated');
-  void resultsDiv.offsetWidth; // force reflow so animation restarts
+  void resultsDiv.offsetWidth;
   resultsDiv.classList.add('ai-results-animated');
   resultsDiv.classList.add('show');
   resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
